@@ -1,0 +1,98 @@
+---
+### Vaultwarden
+
+- name: Create Photoprism Directory
+  file:
+    path: "{{ photoprism_config_dir }}"
+    state: directory
+    mode: "0755"
+
+- name: Create Photoprism Directory
+  file:
+    path: "{{ photoprism_config_dir }}/pics"
+    state: directory
+    mode: "0755"
+
+- name: Create a photoprism network
+  docker_network:
+    name: photoprism_network
+
+- name: Creating database for Photoprism
+  docker_container:
+    name: "photoprism-mariadb"
+    image: "mariadb:latest"
+    pull: yes
+    command: "mysqld --innodb-buffer-pool-size=128M --transaction-isolation=READ-COMMITTED --character-set-server=utf8mb4 --collation-server=utf8mb4_unicode_ci --max-connections=512 --innodb-rollback-on-timeout=OFF --innodb-lock-wait-timeout=120"
+    state: "started"
+    networks:
+      - name: photoprism_network
+    env:
+      "MYSQL_ROOT_PASSWORD": "{{ mariadb_root_password }}"
+      "MYSQL_DATABASE": "photoprism"
+      "MYSQL_USER": "photoprism"
+      "MYSQL_PASSWORD": "{{ mariadb_password }}"
+    volumes:
+      - "{{ photoprism_config_dir }}/mariadb/mysql:/var/lib/mysql"
+    restart_policy: unless-stopped
+
+- name: Installing Photoprism
+  docker_container:
+    name: photoprism
+    image: photoprism/photoprism:latest
+    pull: true
+    security_opts:
+      - seccomp:unconfined
+      - apparmor:unconfined
+    state: "started"
+    networks:
+      - name: photoprism_network
+      - name: bridge
+    env:
+      "PHOTOPRISM_ADMIN_PASSWORD": "{{ password }}"
+      "PHOTOPRISM_SITE_URL": "http://{{ server_ip }}:{{ photoprism_port }}/"
+      "PHOTOPRISM_ORIGINALS_LIMIT": "8000"
+      "PHOTOPRISM_HTTP_COMPRESSION": "gzip"
+      "PHOTOPRISM_DEBUG": "false"
+      "PHOTOPRISM_PUBLIC": "false"
+      "PHOTOPRISM_READONLY": "false"
+      "PHOTOPRISM_EXPERIMENTAL": "false"
+      "PHOTOPRISM_DISABLE_CHOWN": "false"
+      "PHOTOPRISM_DISABLE_WEBDAV": "false"
+      "PHOTOPRISM_DISABLE_SETTINGS": "false"
+      "PHOTOPRISM_DISABLE_TENSORFLOW": "false"
+      "PHOTOPRISM_DISABLE_FACES": "false"
+      "PHOTOPRISM_DISABLE_CLASSIFICATION": "false"
+      "PHOTOPRISM_DARKTABLE_PRESETS": "false"
+      "PHOTOPRISM_DETECT_NSFW": "false"
+      "PHOTOPRISM_UPLOAD_NSFW": "true"
+      "PHOTOPRISM_DATABASE_DRIVER": "mysql"
+      "PHOTOPRISM_DATABASE_SERVER": "photoprism-mariadb:3306"
+      "PHOTOPRISM_DATABASE_NAME": "photoprism"
+      "PHOTOPRISM_DATABASE_USER": "photoprism"
+      "PHOTOPRISM_DATABASE_PASSWORD": "{{ mariadb_password }}"
+      "PHOTOPRISM_SITE_TITLE": "PhotoPrism"
+      "PHOTOPRISM_SITE_CAPTION": "AI-Powered Photos App"
+      "PHOTOPRISM_SITE_DESCRIPTION": ""
+      "PHOTOPRISM_SITE_AUTHOR": ""
+      "HOME": "/photoprism"
+    devices:
+      - "/dev/dri:/dev/dri"
+    working_dir: "/photoprism"
+    volumes:
+      - "{{ photoprism_config_dir }}/storage:/photoprism/storage"
+      - "{{ photoprism_config_dir }}/pics:/photoprism/originals"
+    ports:
+      - "{{ photoprism_port }}:2342"
+    restart_policy: unless-stopped
+    memory: "{{ photoprism_memory }}"
+    labels: flame.type=app
+      flame.name=Photoprism
+      flame.url="http://{{ server_ip }}:{{ photoprism_port }}"
+      flame.icon=triangle-outline
+
+- name: Schedule indexing at 3:00 every day
+  cron:
+    name: Scan the PhotoPrism library
+    hour: "3"
+    minute: "0"
+    job: "/usr/bin/docker exec photoprism /photoprism/bin/photoprism index"

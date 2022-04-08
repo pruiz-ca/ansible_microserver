@@ -1,0 +1,40 @@
+---
+### Vaultwarden
+
+- name: Create Vaultwarden Directory
+  file:
+    path: "{{ vaultwarden_config_dir }}"
+    state: directory
+    mode: "0755"
+
+- name: Installing Vaultwarden
+  docker_container:
+    name: vaultwarden
+    image: vaultwarden/server:latest
+    pull: true
+    state: "started"
+    env:
+      SIGNUPS_ALLOWED: "false"
+      INVITATIONS_ALLOWED: "false"
+      WEBSOCKET_ENABLED: "true"
+      ADMIN_TOKEN: "{{ vaultwarden_admin_token }}"
+      LOG_FILE: "/data/bitwarden.log"
+    volumes:
+      - "{{ vaultwarden_config_dir }}:/data"
+    ports:
+      - "{{ vaultwarden_port_a }}:80"
+      - "{{ vaultwarden_port_b }}:3012"
+    restart_policy: unless-stopped
+    memory: "{{ vaultwarden_memory }}"
+    labels: flame.type=app
+      flame.name=Vaultwarden
+      flame.url="http://{{ server_ip }}:{{ vaultwarden_port_a }}"
+      flame.icon=shield-half-full
+# - name: Installing Vaultwarden Backup
+#   docker_container:
+#     name: vaultwarden-backup
+#     image: ttionya/vaultwarden-backup:latest
+#     pull: true
+#     restart_policy: unless-stopped
+#     volumes_from: vaultwarden
+#     memory: "{{ vaultwarden_backup_memory }}"

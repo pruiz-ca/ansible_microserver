@@ -22,7 +22,7 @@
         - school42
 
     ###
-    # Homer
+    # Containers
     ###
     - role: containers/homer
       become: false
@@ -30,9 +30,6 @@
         - containers
         - homer
 
-    ###
-    # Containers
-    ###
     - role: containers/system/portainer
       become: false
       tags:
@@ -50,6 +47,24 @@
       tags:
         - containers
         - watchtower
+
+    - role: containers/system/flame
+      become: false
+      tags:
+        - containers
+        - flame
+
+    - role: containers/services/vaultwarden
+      become: false
+      tags:
+        - containers
+        - vaultwarden
+
+    - role: containers/services/photoprism
+      become: false
+      tags:
+        - containers
+        - photoprism
 
     ###
     # Post

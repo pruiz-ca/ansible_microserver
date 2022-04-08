@@ -1,0 +1,8 @@
+---
+### Flame
+
+flame_config_dir: "{{ docker_config_dir }}/flame"
+
+flame_memory: 1g
+
+url: "http://{{ localhost }}"

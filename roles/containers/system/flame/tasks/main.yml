@@ -1,0 +1,18 @@
+---
+### Flame
+
+- name: Installing Flame
+  docker_container:
+    name: flame
+    image: "pawelmalak/flame:latest"
+    pull: yes
+    state: "started"
+    env:
+      "PASSWORD": "{{ password }}"
+    volumes:
+      - "{{ flame_config_dir }}:/app/data"
+      - /var/run/docker.sock:/var/run/docker.sock
+    ports:
+      - "{{ flame_port }}:5005"
+    restart_policy: unless-stopped
+    memory: "{{ flame_memory }}"

@@ -18,6 +18,9 @@
       - /var/run/docker.sock:/var/run/docker.sock:ro
       - "{{ portainer_config_dir }}:/data"
     ports:
-      - "{{ port_portainer }}:9000"
+      - "{{ portainer_port }}:9000"
     restart_policy: unless-stopped
     memory: "{{ portainer_memory }}"
+    labels: flame.type=app
+      flame.name=Portainer
+      flame.url="http://{{ server_ip }}:{{ portainer_port }}"

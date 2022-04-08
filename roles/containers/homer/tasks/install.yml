@@ -10,6 +10,6 @@
     volumes:
       - "{{ homer_config_dir }}:/www/assets"
     ports:
-      - "{{ port_homer }}:8080"
+      - "{{ homer_port }}:8080"
     restart_policy: unless-stopped
     memory: "{{ homer_memory }}"

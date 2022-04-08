@@ -7,4 +7,4 @@ portainer_memory: 1g
 
 homer_category: system
 
-url: "portainer.{{ localhost }}"
+url: "http://portainer.{{ localhost }}"
