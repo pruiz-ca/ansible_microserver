@@ -1,0 +1,9 @@
+- name: Install essential packages
+  package:
+    name: "{{ packages_42 }}"
+    state: latest
+
+- name: Install Norminette
+  pip:
+    name: norminette
+    executable: pip3

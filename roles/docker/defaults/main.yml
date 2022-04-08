@@ -1,0 +1,12 @@
+---
+### Docker
+
+docker_config_dir: /dockerdata
+
+docker_img_dir: /dockerimg
+
+docker_storage_driver: overlay2
+
+docker_daemon_json:
+  data-root: "{{ docker_img_dir }}"
+  storage-driver: "{{ docker_storage_driver }}"

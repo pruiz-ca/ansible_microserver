@@ -1,0 +1,59 @@
+---
+- hosts: all
+  become: true
+
+  roles:
+    ###
+    # Essentials
+    ###
+    - role: system
+      tags:
+        - system
+
+    - role: docker
+      tags:
+        - docker
+
+    ###
+    # 42 School
+    ###
+    - role: school42
+      tags:
+        - school42
+
+    ###
+    # Homer
+    ###
+    - role: containers/homer
+      become: false
+      tags:
+        - containers
+        - homer
+
+    ###
+    # Containers
+    ###
+    - role: containers/system/portainer
+      become: false
+      tags:
+        - containers
+        - portainer
+
+    - role: containers/system/cloudflareddns
+      become: false
+      tags:
+        - containers
+        - cloudflareddns
+
+    - role: containers/system/watchtower
+      become: false
+      tags:
+        - containers
+        - watchtower
+
+    ###
+    # Post
+    ###
+    - role: post
+      tags:
+        - post

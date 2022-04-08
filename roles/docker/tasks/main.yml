@@ -1,0 +1,34 @@
+---
+- name: Create Docker data directory
+  file:
+    path: "{{ item }}"
+    state: directory
+    owner: "{{ username }}"
+    group: "{{ username }}"
+    mode: 0755
+  loop:
+    - "{{ docker_config_dir }}"
+    - "{{ docker_img_dir }}"
+
+- name: Add user to Docker group
+  user:
+    name: "{{ username }}"
+    groups: docker
+    append: yes
+
+- name: Generate Docker daemon.json
+  copy:
+    dest: /etc/docker/daemon.json
+    content: "{{ docker_daemon_json | to_nice_json }}"
+  register: docker_config
+
+- name: Check if docker img folder is correct
+  stat:
+    path: "{{ docker_img_dir }}/tmp"
+  register: tmp_folder
+
+- name: Restart Docker
+  service:
+    name: docker
+    state: restarted
+  when: (docker_config.changed) or (not tmp_folder.stat.exists)

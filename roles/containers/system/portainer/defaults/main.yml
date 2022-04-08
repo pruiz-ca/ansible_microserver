@@ -1,0 +1,10 @@
+---
+### Portainer
+
+portainer_config_dir: "{{ docker_config_dir }}/portainer/config"
+
+portainer_memory: 1g
+
+homer_category: system
+
+url: "portainer.{{ localhost }}"

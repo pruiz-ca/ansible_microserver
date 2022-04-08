@@ -1,0 +1,17 @@
+---
+- name: Applying correct permissions to docker_config_dir
+  become: true
+  file:
+    path: "{{ docker_config_dir }}"
+    mode: 0755
+    owner: "{{ username }}"
+    group: "{{ username }}"
+    recurse: true
+
+- name: Applying correct permissions to docker_img_dir
+  become: true
+  file:
+    path: "{{ docker_img_dir }}"
+    mode: 0755
+    owner: "{{ username }}"
+    group: "{{ username }}"

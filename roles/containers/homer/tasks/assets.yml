@@ -1,0 +1,44 @@
+---
+- name: Create homer folder
+  become: true
+  file:
+    path: "{{ homer_config_dir }}"
+    state: directory
+
+- name: Create the icons folder
+  become: true
+  file:
+    path: "{{ homer_config_dir }}/tools/homer-icons"
+    state: directory
+
+- name: List the apps with icons
+  set_fact:
+    apps_with_icons: "{{ apps_with_icons | default([]) + [(item | lower)] }}"
+  with_items: "{{ web_applications }}"
+
+- name: Copy the icons
+  become: true
+  copy:
+    src: "{{ item }}"
+    dest: "{{ homer_config_dir }}/tools/homer-icons/{{ item | basename }}"
+  when: (item | basename).split('.')[0] in apps_with_icons
+  with_fileglob:
+    - files/icons/*.png
+
+- name: Copy the logo
+  become: true
+  copy:
+    src: "files/icons/logo.png"
+    dest: "{{ homer_config_dir }}/tools/homer-icons"
+
+- name: Copy the custom stylesheet
+  become: true
+  copy:
+    src: "files/custom.css"
+    dest: "{{ homer_config_dir }}"
+
+- name: Generate the Homer config file
+  become: true
+  template:
+    src: config.yml.j2
+    dest: "{{ homer_config_dir }}/config.yml"

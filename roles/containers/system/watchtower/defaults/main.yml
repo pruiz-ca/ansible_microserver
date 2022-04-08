@@ -1,0 +1,8 @@
+---
+### Watchtower
+
+watchtower_cron_schedule: 0 0 5 * * *
+
+watchtower_command: "--schedule '{{ watchtower_cron_schedule }}'"
+
+watchtower_memory: 1g
