@@ -1,0 +1,58 @@
+---
+### Install TinyTex
+
+- name: Download installer
+  get_url:
+    url: "https://yihui.org/tinytex/install-bin-unix.sh"
+    dest: /tmp
+  register: installer
+
+- name: Run installer
+  command:
+    cmd: "sh {{ installer.dest }} --admin --no-path"
+    creates: "/opt/tinytex"
+
+- name: Move files to directory
+  command:
+    cmd: "mv ~/.TinyTeX /opt/tinytex"
+    creates: "/opt/tinytex"
+
+- name: Give write permissions
+  file:
+    path: "/opt/tinytex"
+    mode: "a+w"
+    recurse: true
+
+- name: Give executable rights
+  file:
+    path: "/opt/tinytex/bin"
+    mode: "a+wx"
+    recurse: true
+
+- name: Add installed binaries to path
+  command:
+    chdir: "/opt/tinytex/bin/x86_64-linux"
+    cmd: "{{ item }}"
+  loop:
+    - ./tlmgr option sys_bin /usr/bin
+    - ./tlmgr path add
+
+- name: Get list of installed packages
+  command:
+    cmd: tlmgr info --list --only-installed --data name
+  changed_when: false
+  register: installed_packages
+
+- name: "Install necessary packages"
+  when: installed_packages.stdout.find(item) == -1
+  command: "tlmgr install {{ item }}"
+  loop: "{{ packages_latex }}"
+
+### Clone repo
+
+- name: "Clone cv repo"
+  become: false
+  git:
+    repo: "{{ cv_repo }}"
+    dest: "~/Documents/cv/"
+    clone: yes

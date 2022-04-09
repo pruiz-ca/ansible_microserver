@@ -66,6 +66,12 @@
         - containers
         - photoprism
 
+    - role: containers/services/nginxproxy
+      become: false
+      tags:
+        - containers
+        - nginxproxy
+
     ###
     # Post
     ###

@@ -13,3 +13,7 @@ packages:
   - smartmontools
   - lm-sensors
   - ncdu
+  - perl
+  - wget
+  - curl
+  - jq

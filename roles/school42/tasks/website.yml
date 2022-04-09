@@ -1,0 +1,30 @@
+---
+### Clone repo
+
+- name: "Clone website repo"
+  become: false
+  git:
+    repo: "{{ website_repo }}"
+    dest: "~/Documents/{{ website_name }}/"
+    clone: yes
+    recursive: yes
+
+- name: Running Website Container
+  become: false
+  docker_container:
+    name: "{{ website_name }}"
+    image: pruizca/hugo:latest
+    pull: true
+    state: "started"
+    volumes:
+      - "~/Documents/{{ website_name }}:/site"
+    ports:
+      - "{{ personal_website_port }}:1313"
+    env:
+      "DOMAIN": "{{ website_name }}"
+    restart_policy: unless-stopped
+    memory: "{{ personal_website_memory }}"
+    labels: flame.type=app
+      flame.name="Personal Website"
+      flame.url="http://{{ server_ip }}:{{ personal_website_port }}"
+      flame.icon=web

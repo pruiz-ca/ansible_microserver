@@ -6,3 +6,24 @@ packages_42:
   - valgrind
   - nodejs
   - npm
+
+packages_latex:
+  - enumitem
+  - ragged2e
+  - ms
+  - fancyhdr
+  - xifthen
+  - ifmtarg
+  - setspace
+  - fontawesome
+  - sourcesanspro
+  - tcolorbox
+  - pgf
+  - environ
+  - trimspaces
+  - parskip
+  - moresize
+  - doi
+  - lastpage
+
+personal_website_memory: 512MB

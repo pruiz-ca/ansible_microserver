@@ -1,0 +1,27 @@
+---
+### Vaultwarden
+
+- name: Create Nginx Proxy Manager Directory
+  file:
+    path: "{{ nginx_proxy_config_dir }}"
+    state: directory
+    mode: "0755"
+
+- name: Installing Nginx Proxy Manager
+  docker_container:
+    name: nginx-proxy-manager
+    image: jlesage/nginx-proxy-manager:latest
+    pull: true
+    state: "started"
+    volumes:
+      - "{{ nginx_proxy_config_dir }}:/config"
+    ports:
+      - "{{ nginx_proxy_port }}:8181"
+      - 80:8080
+      - 443:4443
+    restart_policy: unless-stopped
+    memory: "{{ nginx_proxy_memory }}"
+    labels: flame.type=app
+      flame.name="Nginx Proxy Manager"
+      flame.url="http://{{ server_ip }}:{{ nginx_proxy_port }}"
+      flame.icon=hexagon-slice-6
