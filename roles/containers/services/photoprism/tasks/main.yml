@@ -75,6 +75,7 @@
       "PHOTOPRISM_SITE_DESCRIPTION": ""
       "PHOTOPRISM_SITE_AUTHOR": ""
       "HOME": "/photoprism"
+      "TZ": "{{ timezone }}"
     devices:
       - "/dev/dri:/dev/dri"
     working_dir: "/photoprism"

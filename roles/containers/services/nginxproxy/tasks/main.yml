@@ -19,6 +19,8 @@
       - "{{ nginx_proxy_port }}:8181"
       - 80:8080
       - 443:4443
+    env:
+      "TZ": "{{ timezone }}"
     restart_policy: unless-stopped
     memory: "{{ nginx_proxy_memory }}"
     labels: flame.type=app

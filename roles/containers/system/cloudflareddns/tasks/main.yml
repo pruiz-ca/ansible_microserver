@@ -7,8 +7,9 @@
     image: oznu/cloudflare-ddns:latest
     pull: true
     env:
-      API_KEY: "{{ token_cloudflare }}"
-      ZONE: "{{ zone_cloudflare }}"
-      PROXIED: "true"
+      "API_KEY": "{{ token_cloudflare }}"
+      "ZONE": "{{ zone_cloudflare }}"
+      "PROXIED": "true"
+      "TZ": "{{ timezone }}"
     restart_policy: always
     memory: "{{ cloudflare_memory }}"

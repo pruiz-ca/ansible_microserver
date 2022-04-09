@@ -14,11 +14,12 @@
     pull: true
     state: "started"
     env:
-      SIGNUPS_ALLOWED: "false"
-      INVITATIONS_ALLOWED: "false"
-      WEBSOCKET_ENABLED: "true"
-      ADMIN_TOKEN: "{{ vaultwarden_admin_token }}"
-      LOG_FILE: "/data/bitwarden.log"
+      "SIGNUPS_ALLOWED": "false"
+      "INVITATIONS_ALLOWED": "false"
+      "WEBSOCKET_ENABLED": "true"
+      "ADMIN_TOKEN": "{{ vaultwarden_admin_token }}"
+      "LOG_FILE": "/data/bitwarden.log"
+      "TZ": "{{ timezone }}"
     volumes:
       - "{{ vaultwarden_config_dir }}:/data"
     ports:

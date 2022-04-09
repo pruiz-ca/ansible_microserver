@@ -11,5 +11,7 @@
       - "{{ homer_config_dir }}:/www/assets"
     ports:
       - "{{ homer_port }}:8080"
+    env:
+      "TZ": "{{ timezone }}"
     restart_policy: unless-stopped
     memory: "{{ homer_memory }}"

@@ -9,6 +9,7 @@
     state: "started"
     env:
       "PASSWORD": "{{ password }}"
+      "TZ": "{{ timezone }}"
     volumes:
       - "{{ flame_config_dir }}:/app/data"
       - /var/run/docker.sock:/var/run/docker.sock

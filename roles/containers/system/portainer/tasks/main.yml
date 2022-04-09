@@ -19,6 +19,8 @@
       - "{{ portainer_config_dir }}:/data"
     ports:
       - "{{ portainer_port }}:9000"
+    env:
+      "TZ": "{{ timezone }}"
     restart_policy: unless-stopped
     memory: "{{ portainer_memory }}"
     labels: flame.type=app
