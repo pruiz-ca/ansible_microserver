@@ -8,7 +8,7 @@
 # # Try tyo avoid any plain-text passwords
 *pwd*
 *password*
-*.txt
+*pass.txt
 *secret*
 
 # Exclude all binaries
