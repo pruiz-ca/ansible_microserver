@@ -1,0 +1,8 @@
+---
+guacamole_config_dir: "{{ docker_config_dir }}/guacamole/config"
+
+guacamole_db_dir: "{{ docker_config_dir }}/guacamole/db"
+
+guacamole_init_dir: "{{ docker_config_dir }}/guacamole/init"
+
+guacamole_memory: 1g

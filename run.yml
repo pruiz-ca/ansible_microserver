@@ -24,11 +24,11 @@
     ###
     # Containers
     ###
-    - role: containers/homer
-      become: false
-      tags:
-        - containers
-        - homer
+    # - role: containers/homer
+    #   become: false
+    #   tags:
+    #     - containers
+    #     - homer
 
     - role: containers/system/portainer
       become: false
@@ -71,6 +71,12 @@
       tags:
         - containers
         - nginxproxy
+
+    - role: containers/services/guacamole
+      become: false
+      tags:
+        - containers
+        - guacamole
 
     ###
     # Post

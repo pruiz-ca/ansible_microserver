@@ -10,9 +10,12 @@
 - name: Installing Nginx Proxy Manager
   docker_container:
     name: nginx-proxy-manager
+    hostname: nginx-proxy-manager
     image: jlesage/nginx-proxy-manager:latest
     pull: true
     state: "started"
+    networks:
+      - name: main_network
     volumes:
       - "{{ nginx_proxy_config_dir }}:/config"
     ports:

@@ -11,12 +11,16 @@
 - name: Installing Portainer
   docker_container:
     name: portainer
+    hostname: portainer
     image: portainer/portainer-ce:latest
     pull: true
+    state: "started"
     volumes:
       - /etc/localtime:/etc/localtime:ro
       - /var/run/docker.sock:/var/run/docker.sock:ro
       - "{{ portainer_config_dir }}:/data"
+    networks:
+      - name: main_network
     ports:
       - "{{ portainer_port }}:9000"
     env:

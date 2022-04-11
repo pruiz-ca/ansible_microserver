@@ -10,6 +10,7 @@
 - name: Installing Vaultwarden
   docker_container:
     name: vaultwarden
+    hostname: vaultwarden
     image: vaultwarden/server:latest
     pull: true
     state: "started"
@@ -18,10 +19,12 @@
       "INVITATIONS_ALLOWED": "false"
       "WEBSOCKET_ENABLED": "true"
       "ADMIN_TOKEN": "{{ vaultwarden_admin_token }}"
-      "LOG_FILE": "/data/bitwarden.log"
+      "LOG_FILE": "/data/vaultwarden.log"
       "TZ": "{{ timezone }}"
     volumes:
       - "{{ vaultwarden_config_dir }}:/data"
+    networks:
+      - name: main_network
     ports:
       - "{{ vaultwarden_port_a }}:80"
       - "{{ vaultwarden_port_b }}:3012"

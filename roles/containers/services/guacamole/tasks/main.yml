@@ -1,0 +1,87 @@
+---
+### Guacamole
+
+- name: Create Guacamole directories
+  file:
+    path: "{{ item }}"
+    state: directory
+  with_items:
+    - "{{ guacamole_config_dir }}"
+    - "{{ guacamole_init_dir }}"
+
+- name: Create Guacamole network
+  docker_network:
+    name: guacamole_network
+
+- name: Copy init db
+  become: true
+  copy:
+    src: ./files/initdb.sql
+    dest: "{{ guacamole_init_dir }}/initdb.sql"
+
+- name: Installing Guacd
+  docker_container:
+    name: guacamole-guacd
+    hostname: guacamole-guacd
+    image: "guacamole/guacd:latest"
+    pull: true
+    state: "started"
+    networks:
+      - name: guacamole_network
+
+- name: Creating database for Guacamole
+  docker_container:
+    name: "guacamole-postgres"
+    hostname: "guacamole-postgres"
+    image: postgres:latest
+    pull: yes
+    state: "started"
+    networks:
+      - name: guacamole_network
+    env:
+      "POSTGRES_PASSWORD": "{{ mariadb_password }}"
+      "POSTGRES_USER": guacamole
+      "POSTGRES_INITDB_ARGS": "--auth-host=md5"
+    restart_policy: unless-stopped
+    volumes:
+      - "{{ guacamole_db_dir }}:/var/lib/postgresql/data:rw"
+      - "{{ guacamole_init_dir }}:/docker-entrypoint-initdb.d:ro"
+
+- name: Wait until db container is running
+  pause:
+    seconds: 5
+
+- name: Fill initial database
+  become: true
+  community.docker.docker_container_exec:
+    container: guacamole-postgres
+    command: usr/bin/psql guacamole guacamole < /docker-entrypoint-initdb.d/initdb.sql
+    user: root
+
+- name: Installing Guacamole
+  docker_container:
+    name: guacamole
+    hostname: guacamole
+    image: "guacamole/guacamole:latest"
+    pull: true
+    state: "started"
+    networks:
+      - name: main_network
+      - name: guacamole_network
+    volumes:
+      - "{{ guacamole_config_dir }}:/config:rw"
+    env:
+      "GUACD_HOSTNAME": "guacamole-guacd"
+      "POSTGRES_HOSTNAME": "guacamole-postgres"
+      "POSTGRES_DATABASE": "guacamole"
+      "POSTGRES_USER": "guacamole"
+      "POSTGRES_PASSWORD": "{{ mariadb_password }}"
+      "WEBAPP_CONTEXT": "ROOT"
+    ports:
+      - "{{ guacamole_port }}:8080/tcp"
+    restart_policy: unless-stopped
+    memory: "{{ guacamole_memory }}"
+    labels: flame.type=app
+      flame.name=Guacamole
+      flame.url="http://{{ server_ip }}:{{ guacamole_port }}"
+      flame.icon=bowl-mix

@@ -32,3 +32,13 @@
     name: docker
     state: restarted
   when: (docker_config.changed) or (not tmp_folder.stat.exists)
+
+- name: Make sure Docker is running and enabled
+  service:
+    name: docker
+    state: started
+    enabled: yes
+
+- name: Create main network
+  docker_network:
+    name: main_network

@@ -4,6 +4,7 @@
 - name: Installing Watchtower
   docker_container:
     name: watchtower
+    hostname: watchtower
     image: containrrr/watchtower:latest
     pull: true
     volumes:
@@ -13,5 +14,7 @@
       "WATCHTOWER_CLEANUP": "true"
       "WATCHTOWER_INCLUDE_STOPPED": "true"
       "TZ": "{{ timezone }}"
+    networks:
+      - name: main_network
     restart_policy: unless-stopped
     memory: "{{ watchtower_memory }}"

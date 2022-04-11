@@ -4,12 +4,16 @@
 - name: Installing Cloudflare DDNS
   docker_container:
     name: cloudflare_ddns
+    hostname: cloudflare_ddns
     image: oznu/cloudflare-ddns:latest
     pull: true
+    state: "started"
     env:
       "API_KEY": "{{ token_cloudflare }}"
       "ZONE": "{{ zone_cloudflare }}"
       "PROXIED": "true"
       "TZ": "{{ timezone }}"
+    networks:
+      - name: main_network
     restart_policy: always
     memory: "{{ cloudflare_memory }}"

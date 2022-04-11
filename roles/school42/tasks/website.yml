@@ -12,12 +12,15 @@
 - name: Running Website Container
   become: false
   docker_container:
-    name: "{{ website_name }}"
+    name: website
+    hostname: website
     image: pruizca/hugo:latest
     pull: true
     state: "started"
     volumes:
       - "~/Documents/{{ website_name }}:/site"
+    networks:
+      - name: main_network
     ports:
       - "{{ personal_website_port }}:1313"
     env:

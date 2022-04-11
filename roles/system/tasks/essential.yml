@@ -40,3 +40,15 @@
     name: sshd
     state: restarted
   when: sshd_config.changed
+
+- name: Install cloudflared
+  apt:
+    deb: https://github.com/cloudflare/cloudflared/releases/latest/download/cloudflared-linux-amd64.deb
+    state: present
+
+- name: Update cloudflared
+  command: "cloudflared update"
+
+- name: Install Cloudflare tunnel
+  command: "cloudflared service install {{ token_tunnel_cloudflare }}"
+  ignore_errors: true
