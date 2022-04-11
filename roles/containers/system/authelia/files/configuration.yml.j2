@@ -1,0 +1,65 @@
+theme: dark
+
+server.host: 0.0.0.0
+server.port: 9091
+
+server:
+  read_buffer_size: 4096
+  write_buffer_size: 4096
+  path: ""
+
+jwt_secret: {{ authelia_secret }}
+
+authentication_backend:
+  disable_reset_password: true
+  file:
+    path: /config/users_database.yml
+    password:
+      algorithm: sha512
+      iterations: 50000
+
+access_control:
+  default_policy: two_factor
+  rules:
+    - domain:
+      - {{ website_name }}
+      - "*.{{ website_name }}"
+      - "*.{{ website_name }}"
+      policy: two_factor
+
+session:
+  name: authelia_session
+  secret: {{ authelia_secret }}
+  expiration: 1h
+  inactivity: 5m
+  remember_me_duration: 1M
+  domain: {{ website_name }}
+
+regulation:
+  max_retries: 3
+  find_time: 10m
+  ban_time: 12h
+
+totp:
+  issuer: {{ website_name }}
+  algorithm: sha1
+  digits: 6
+  period: 30
+  skew: 1
+
+storage:
+  local:
+    path: /config/db.sqlite3
+  encryption_key: {{ authelia_secret }}
+
+notifier:
+  disable_startup_check: true
+  smtp:
+    username: {{ email }}
+    password: {{ email_password }}
+    host: {{ email_smtp_host }}
+    port: {{ email_port }}
+    sender: {{ email }}
+    subject: "[Authelia]"
+    startup_check_address: {{ email }}
+    disable_require_tls: true

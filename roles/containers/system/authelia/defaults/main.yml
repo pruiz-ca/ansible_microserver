@@ -1,0 +1,6 @@
+---
+# Authelia
+
+authelia_config_dir: "{{ docker_config_dir }}/authelia"
+
+authelia_memory: 512MB

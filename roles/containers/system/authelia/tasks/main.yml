@@ -1,0 +1,40 @@
+---
+### Authelia
+
+- name: Create Authelia directory
+  file:
+    path: "{{ authelia_config_dir }}"
+    state: directory
+    mode: 0755
+
+- name: Install the configuration template
+  become: true
+  template:
+    src: ./files/configuration.yml.j2
+    dest: "{{ authelia_config_dir }}/configuration.yml"
+    mode: 0644
+
+- name: Install the users template
+  become: true
+  template:
+    src: ./files/users_database.yml.j2
+    dest: "{{ authelia_config_dir }}/users_database.yml"
+    mode: 0644
+
+- name: Installing Authelia
+  docker_container:
+    name: authelia
+    hostname: authelia
+    image: authelia/authelia:latest
+    pull: true
+    state: "started"
+    env:
+      "TZ": "{{ timezone }}"
+    networks:
+      - name: main_network
+    ports:
+      - "{{ authelia_port }}:9091"
+    volumes:
+      - "{{ authelia_config_dir }}:/config"
+    restart_policy: unless-stopped
+    memory: "{{ authelia_memory }}"
