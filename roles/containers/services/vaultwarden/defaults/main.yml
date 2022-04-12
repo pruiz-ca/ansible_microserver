@@ -5,5 +5,3 @@ vaultwarden_config_dir: "{{ docker_config_dir }}/vaultwarden"
 
 vaultwarden_memory: 1g
 vaultwarden_backup_memory: 1g
-
-url: "http://vaultwarden.{{ localhost }}"

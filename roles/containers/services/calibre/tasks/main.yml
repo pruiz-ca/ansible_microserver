@@ -1,0 +1,59 @@
+---
+### Calibre
+
+- name: Create Calibre Directory
+  file:
+    path: "{{ item }}"
+    state: directory
+    mode: "0755"
+  with_items:
+    - "{{ calibre_config_dir }}"
+    - "{{ calibre_web_config_dir }}"
+
+- name: Installing Calibre
+  docker_container:
+    name: calibre
+    hostname: calibre
+    image: linuxserver/calibre:latest
+    pull: true
+    state: "started"
+    networks:
+      - name: main_network
+    env:
+      "DISABLE_AUTH": "true"
+      "TZ": "{{ timezone }}"
+    volumes:
+      - "{{ calibre_config_dir }}:/config"
+    ports:
+      - "{{ calibre_port_a }}:8080"
+      - "{{ calibre_port_b }}:8081"
+    restart_policy: unless-stopped
+    memory: "{{ calibre_memory }}"
+    labels: flame.type=app
+      flame.name=Calibre
+      flame.url="http://{{ server_ip }}:{{ calibre_port_a }}"
+      flame.icon=bookshelf
+
+- name: Installing Calibre Web
+  docker_container:
+    name: calibre_web
+    hostname: calibre_web
+    image: linuxserver/calibre-web:latest
+    pull: true
+    state: "started"
+    networks:
+      - name: main_network
+    env:
+      "DOCKER_MODS": "linuxserver/calibre-web:calibre"
+      "TZ": "{{ timezone }}"
+    volumes:
+      - "{{ calibre_web_config_dir }}:/config"
+      - "{{ calibre_config_dir }}/library:/books"
+    ports:
+      - "{{ calibre_web_port }}:8083"
+    restart_policy: unless-stopped
+    memory: "{{ calibre_web_memory }}"
+    labels: flame.type=app
+      flame.name="Calibre Web"
+      flame.url="http://{{ server_ip }}:{{ calibre_web_port }}"
+      flame.icon=book

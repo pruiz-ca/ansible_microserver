@@ -54,6 +54,12 @@
         - containers
         - flame
 
+    - role: containers/system/authelia
+      become: false
+      tags:
+        - containers
+        - authelia
+
     - role: containers/services/vaultwarden
       become: false
       tags:
@@ -78,11 +84,11 @@
         - containers
         - guacamole
 
-    - role: containers/system/authelia
+    - role: containers/services/calibre
       become: false
       tags:
         - containers
-        - authelia
+        - calibre
 
     ###
     # Post

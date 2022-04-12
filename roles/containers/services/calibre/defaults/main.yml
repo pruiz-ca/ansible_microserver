@@ -1,0 +1,10 @@
+---
+### Calibre
+
+calibre_config_dir: "{{ docker_config_dir }}/calibre"
+
+calibre_web_config_dir: "{{ calibre_config_dir }}/web"
+
+calibre_memory: 512MB
+
+calibre_web_memory: 512MB

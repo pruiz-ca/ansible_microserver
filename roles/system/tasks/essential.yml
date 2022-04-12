@@ -23,6 +23,15 @@
     line: "PermitRootLogin no"
   register: sshd_config
 
+- name: Add ssh-rsa support
+  lineinfile:
+    path: /etc/ssh/sshd_config
+    state: present
+    line: "{{ item }}"
+  with_items:
+    - "PubkeyAcceptedKeyTypes +ssh-rsa"
+    - "HostKeyAlgorithms +ssh-rsa"
+
 - name: Enable passwordless sudo for user
   lineinfile:
     dest: /etc/sudoers

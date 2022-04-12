@@ -4,5 +4,3 @@
 photoprism_config_dir: "{{ docker_config_dir }}/photoprism"
 
 photoprism_memory: 1g
-
-url: "http://photoprism.{{ localhost }}"

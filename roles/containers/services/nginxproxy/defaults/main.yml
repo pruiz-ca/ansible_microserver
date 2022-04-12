@@ -4,5 +4,3 @@
 nginx_proxy_config_dir: "{{ docker_config_dir }}/nginx_proxy_manager"
 
 nginx_proxy_memory: 1g
-
-url: "http://proxy.{{ localhost }}"
