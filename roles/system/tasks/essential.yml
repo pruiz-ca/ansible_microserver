@@ -60,4 +60,5 @@
 
 - name: Install Cloudflare tunnel
   command: "cloudflared service install {{ token_tunnel_cloudflare }}"
-  ignore_errors: true
+  register: cloudflared_install_result
+  failed_when: "'fatal error' in cloudflared_install_result.stderr"

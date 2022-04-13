@@ -1,0 +1,79 @@
+---
+- name: Add Crowdsec GPG apt Key
+  apt_key:
+    url: https://packagecloud.io/crowdsec/crowdsec/gpgkey
+    state: present
+
+- name: Add Crowdsec Repository
+  become: true
+  apt_repository:
+    repo: "deb [arch=amd64] https://packagecloud.io/crowdsec/crowdsec/debian/ bullseye main"
+    state: present
+
+- name: Install Crowdsec
+  apt:
+    update_cache: yes
+    name:
+      - gettext-base
+      - crowdsec
+      - crowdsec-firewall-bouncer-iptables
+      - prometheus
+    state: latest
+
+- name: Fix Crowdsec Service
+  replace:
+    path: "/etc/systemd/system/crowdsec.service"
+    regexp: "PIDFile=/var/run/crowdsec.pid"
+    replace: "PIDFile=/run/crowdsec.pid"
+
+- name: Fix Permissions for Crowdsec Service
+  file:
+    dest: /etc/systemd/system/crowdsec.service
+    mode: +x
+  notify:
+    - Restart crowdsec
+#
+# - name: cscli hub update
+#   command:
+#     cmd: cscli hub update
+#   changed_when: false
+
+# - name: Install the necessary collections
+#   command:
+#     cmd: "sudo cscli collections install crowdsecurity/{{ item }}"
+#   with_items:
+#     - sshd
+#     - linux
+#     - iptables
+#     - nginx
+#     - nginx-proxy-manager
+#   register: collections_install_result
+#   changed_when: "'overwrite' not in collections_install_result.stderr"
+
+# - name: Enable Prometheus
+#   lineinfile:
+#     path: "/etc/crowdsec/config.yaml"
+#     line: "  enabled: true"
+#     search_string: "enabled: false"
+#     insertafter: "^prometeus:.*$"
+#   notify:
+#     - Restart prometheus
+#     - Restart crowdsec
+
+# - name: Increase ban time
+#   replace:
+#     path: "/etc/crowdsec/profiles.yaml"
+#     regexp: "duration: [0-9]h"
+#     replace: "duration: 999h"
+#   notify:
+#     - Restart crowdsec
+
+# - name: Start and enable Crowdsec services
+#   service:
+#     name: "{{ item }}"
+#     state: started
+#     enabled: true
+#   with_items:
+#     - crowdsec
+#     - crowdsec-firewall-bouncer
+#     - prometheus

@@ -26,6 +26,7 @@
     image: "guacamole/guacd:latest"
     pull: true
     state: "started"
+    restart_policy: unless-stopped
     networks:
       - name: guacamole_network
 

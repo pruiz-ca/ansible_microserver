@@ -1,0 +1,61 @@
+---
+- name: Install Pihole + Unbound
+  docker_container:
+    name: pihole
+    hostname: pihole
+    domainname: pihole.local
+    image: cbcrowe/pihole-unbound:latest
+    pull: true
+    state: "started"
+    env:
+      "FTLCONF_REPLY_ADDR4": "{{ server_ip }}"
+      "WEBPASSWORD": "{{ password }}"
+      "WEBTHEME": "default-auto"
+      "REV_SERVER": "true"
+      "REV_SERVER_TARGET": "{{ router_ip }}"
+      "REV_SERVER_DOMAIN": "{{ router_ip }}"
+      "REV_SERVER_CIDR": "{{ router_range }}/16"
+      "PIHOLE_DNS_": "127.0.0.1#5335"
+      "DNSSEC": "true"
+      "DNSMASQ_LISTENING": "single"
+      "TZ": "{{ timezone }}"
+    networks:
+      - name: main_network
+    ports:
+      - "{{ pihole_port_a }}:80/tcp"
+      - "{{ pihole_port_b }}:443/tcp"
+      - "{{ pihole_port_c }}:53/tcp"
+      - "{{ pihole_port_c }}:53/udp"
+      - "{{ pihole_port_d }}:5335/tcp"
+    volumes:
+      - "{{ pihole_config_dir }}:/etc/pihole:rw"
+      - "{{ dnsmasq_config_dir }}:/etc/dnsmasq.d:rw"
+    restart_policy: unless-stopped
+    memory: "{{ pihole_memory }}"
+    labels: flame.type=app
+      flame.name=Pihole
+      flame.url="http://{{ server_ip }}:{{ pihole_port_a }}"
+      flame.icon=pi-hole
+
+- name: Wait until pihole container is running
+  pause:
+    seconds: 5
+
+- name: Check query limit
+  lineinfile:
+    state: absent
+    path: "{{ pihole_config_dir }}/pihole-FTL.conf"
+    regexp: "^RATE_LIMIT=0"
+  check_mode: true
+  changed_when: false
+  register: check
+
+- name: Disable query limit if undefined
+  become: true
+  lineinfile:
+    state: present
+    path: "{{ pihole_config_dir }}/pihole-FTL.conf"
+    line: "RATE_LIMIT=0"
+  when: check.found == 0
+  notify:
+    - Restart pihole

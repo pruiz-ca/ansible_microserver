@@ -1,0 +1,6 @@
+---
+- name: Restart pihole
+  docker_container:
+    name: pihole
+    state: "started"
+    restart: yes

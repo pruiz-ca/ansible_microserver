@@ -90,6 +90,20 @@
         - containers
         - calibre
 
+    - role: containers/system/pihole
+      become: false
+      tags:
+        - containers
+        - pihole
+
+    ###
+    # Security
+    ###
+    # - role: security/crowdsec
+    #   tags:
+    #     - security
+    #     - crowdsec
+
     ###
     # Post
     ###
