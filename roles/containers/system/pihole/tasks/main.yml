@@ -34,7 +34,7 @@
     memory: "{{ pihole_memory }}"
     labels: flame.type=app
       flame.name=Pihole
-      flame.url="http://{{ server_ip }}:{{ pihole_port_a }}"
+      flame.url="http://{{ server_ip }}:{{ pihole_port_a }}/admin"
       flame.icon=pi-hole
 
 - name: Wait until pihole container is running

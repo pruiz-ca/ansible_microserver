@@ -60,6 +60,12 @@
         - containers
         - authelia
 
+    - role: containers/system/pihole
+      become: false
+      tags:
+        - containers
+        - pihole
+
     - role: containers/services/vaultwarden
       become: false
       tags:
@@ -90,11 +96,11 @@
         - containers
         - calibre
 
-    - role: containers/system/pihole
+    - role: containers/services/nextcloud
       become: false
       tags:
         - containers
-        - pihole
+        - nextcloud
 
     ###
     # Security

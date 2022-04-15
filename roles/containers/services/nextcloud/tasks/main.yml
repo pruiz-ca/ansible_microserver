@@ -1,0 +1,78 @@
+---
+### Nextcloud
+
+- name: Create Nextcloud Directories
+  file:
+    path: "{{ item }}"
+    state: directory
+    mode: "0755"
+  with_items:
+    - "{{ nextcloud_config_dir }}"
+    - "{{ nextcloud_db_dir }}"
+
+- name: Create a nextcloud network
+  docker_network:
+    name: nextcloud_network
+
+- name: Create Nextcloud database
+  docker_container:
+    name: nextcloud-mariadb
+    hostname: nextcloud-mariadb
+    image: mariadb:latest
+    pull: yes
+    networks:
+      - name: nextcloud_network
+    command: "--transaction-isolation=READ-COMMITTED --binlog-format=ROW --skip-innodb-read-only-compressed --innodb-read-only-compressed=OFF"
+    state: "started"
+    env:
+      "TZ": "{{ timezone }}"
+      "MARIADB_ROOT_PASSWORD": "{{ mariadb_root_password }}"
+      "MARIADB_DATABASE": "nextcloud"
+      "MARIADB_USER": "nextcloud"
+      "MARIADB_PASSWORD": "{{ mariadb_password }}"
+    volumes:
+      - "{{ nextcloud_db_dir }}:/var/lib/mysql"
+    restart_policy: unless-stopped
+
+- name: Wait until db container is running
+  pause:
+    seconds: 5
+
+- name: Create Nextcloud redis cache
+  docker_container:
+    name: nextcloud-redis
+    hostname: nextcloud-redis
+    image: redis:alpine
+    networks:
+      - name: nextcloud_network
+    pull: yes
+    state: "started"
+    restart_policy: unless-stopped
+
+- name: Installing Nextcloud
+  docker_container:
+    name: nextcloud
+    hostname: nextcloud
+    image: linuxserver/nextcloud:php8
+    pull: true
+    state: "started"
+    networks:
+      - name: main_network
+      - name: nextcloud_network
+    env:
+      "TZ": "{{ timezone }}"
+      "MYSQL_HOST": "nextcloud-mariadb"
+      "MYSQL_DATABASE": "nextcloud"
+      "MYSQL_USER": "nextcloud"
+      "MYSQL_PASSWORD": "{{ mariadb_password }}"
+      "REDIS_HOST": "nextcloud-redis"
+    volumes:
+      - "{{ nextcloud_config_dir }}:/config"
+    ports:
+      - "{{ nextcloud_port }}:443"
+    restart_policy: unless-stopped
+    memory: "{{ nextcloud_memory }}"
+    labels: flame.type=app
+      flame.name=Nextcloud
+      flame.url="https://{{ server_ip }}:{{ nextcloud_port }}"
+      flame.icon=cloud
