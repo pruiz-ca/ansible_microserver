@@ -1,0 +1,8 @@
+---
+### Gitea
+
+gitea_config_dir: "{{ docker_config_dir }}/gitea"
+
+gitea_web_config_dir: "{{ gitea_config_dir }}/web"
+
+gitea_memory: 512MB

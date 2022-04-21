@@ -83,7 +83,7 @@
     working_dir: "/photoprism"
     volumes:
       - "{{ photoprism_config_dir }}/storage:/photoprism/storage"
-      - "{{ photoprism_config_dir }}/pics:/photoprism/originals"
+      - "/mnt/wd-hdd/Photos:/photoprism/originals"
     ports:
       - "{{ photoprism_port }}:2342"
     restart_policy: unless-stopped
@@ -98,4 +98,4 @@
     name: Scan the PhotoPrism library
     hour: "3"
     minute: "0"
-    job: "/usr/bin/docker exec photoprism /photoprism/bin/photoprism index"
+    job: "/usr/bin/docker exec photoprism /opt/photoprism/bin/photoprism index"

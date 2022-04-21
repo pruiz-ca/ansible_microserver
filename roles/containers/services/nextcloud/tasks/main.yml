@@ -2,6 +2,7 @@
 ### Nextcloud
 
 - name: Create Nextcloud Directories
+  become: true
   file:
     path: "{{ item }}"
     state: directory
@@ -36,7 +37,7 @@
 
 - name: Wait until db container is running
   pause:
-    seconds: 5
+    seconds: 10
 
 - name: Create Nextcloud redis cache
   docker_container:
@@ -61,13 +62,15 @@
       - name: nextcloud_network
     env:
       "TZ": "{{ timezone }}"
-      "MYSQL_HOST": "nextcloud-mariadb"
-      "MYSQL_DATABASE": "nextcloud"
-      "MYSQL_USER": "nextcloud"
-      "MYSQL_PASSWORD": "{{ mariadb_password }}"
+      "MARIADB_HOST": "nextcloud-mariadb"
+      "MARIADB_DATABASE": "nextcloud"
+      "MARIADB_USER": "nextcloud"
+      "MARIADB_PASSWORD": "{{ mariadb_password }}"
       "REDIS_HOST": "nextcloud-redis"
     volumes:
       - "{{ nextcloud_config_dir }}:/config"
+      - "{{ nextcloud_data_dir }}:/data"
+      - "/mnt/wd-hdd:/mnt/wd-hdd"
     ports:
       - "{{ nextcloud_port }}:443"
     restart_policy: unless-stopped
@@ -76,3 +79,14 @@
       flame.name=Nextcloud
       flame.url="https://{{ server_ip }}:{{ nextcloud_port }}"
       flame.icon=cloud
+
+- name: Wait until db container is running
+  pause:
+    seconds: 15
+
+- name: Applying correct permissions to nextcloud_config_dir
+  become: true
+  file:
+    path: "{{ nextcloud_config_dir }}"
+    mode: 0777
+    recurse: true

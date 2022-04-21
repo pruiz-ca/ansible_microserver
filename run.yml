@@ -102,6 +102,12 @@
         - containers
         - nextcloud
 
+    - role: containers/services/gitea
+      become: false
+      tags:
+        - containers
+        - gitea
+
     ###
     # Security
     ###

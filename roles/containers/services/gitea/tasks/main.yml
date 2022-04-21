@@ -1,0 +1,33 @@
+---
+### Gitea
+
+- name: Create Gitea Directory
+  file:
+    path: "{{ gitea_config_dir }}"
+    state: directory
+    mode: "0755"
+
+- name: Installing Gitea
+  docker_container:
+    name: gitea
+    hostname: gitea
+    image: gitea/gitea:latest
+    pull: true
+    state: "started"
+    networks:
+      - name: main_network
+    env:
+      "TZ": "{{ timezone }}"
+    volumes:
+      - USER_UID=1000
+      - USER_GID=1000
+      - "{{ gitea_config_dir }}:/data"
+    ports:
+      - "{{ gitea_port_a }}:3000"
+      - "{{ gitea_port_b }}:22"
+    restart_policy: unless-stopped
+    memory: "{{ gitea_memory }}"
+    labels: flame.type=app
+      flame.name=Gitea
+      flame.url="http://{{ server_ip }}:{{ gitea_port_a }}"
+      flame.icon=tea-outline

@@ -3,6 +3,8 @@
 
 nextcloud_config_dir: "{{ docker_config_dir }}/nextcloud"
 
+nextcloud_data_dir: "{{ nextcloud_config_dir }}/data"
+
 nextcloud_db_dir: "{{ nextcloud_config_dir }}/db"
 
 nextcloud_memory: 1G
