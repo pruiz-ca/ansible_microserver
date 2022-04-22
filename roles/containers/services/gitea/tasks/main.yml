@@ -17,10 +17,10 @@
     networks:
       - name: main_network
     env:
+      "USER_UID": "1000"
+      "USER_GID": "1000"
       "TZ": "{{ timezone }}"
     volumes:
-      - USER_UID=1000
-      - USER_GID=1000
       - "{{ gitea_config_dir }}:/data"
     ports:
       - "{{ gitea_port_a }}:3000"
@@ -31,3 +31,35 @@
       flame.name=Gitea
       flame.url="http://{{ server_ip }}:{{ gitea_port_a }}"
       flame.icon=tea-outline
+
+- name: Remove mirror directory
+  become: true
+  file:
+    path: "{{ gitea_config_dir }}/github_mirror"
+    state: absent
+
+- name: "Clone github mirror repo"
+  become: false
+  git:
+    repo: "https://github.com/nmasse-itix/github-mirror.git"
+    dest: "{{ gitea_config_dir }}/github_mirror"
+    clone: yes
+
+- name: Install the configuration template
+  become: true
+  template:
+    src: ./files/config.yaml.j2
+    dest: "{{ gitea_config_dir }}/github_mirror/config.yaml"
+    mode: 0644
+
+- name: Compile github-mirror
+  command: "go build -o github-mirror"
+  args:
+    chdir: "{{ gitea_config_dir }}/github_mirror"
+
+- name: Schedule mirroring at 00:00
+  cron:
+    name: Scan for mirror changes
+    hour: "0"
+    minute: "0"
+    job: "{{ gitea_config_dir }}/github_mirror/github-mirror {{ gitea_config_dir }}/github_mirror/config.yaml"
