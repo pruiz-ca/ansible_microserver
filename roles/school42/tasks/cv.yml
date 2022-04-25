@@ -50,6 +50,12 @@
 
 ### Clone repo
 
+- name: Remove cv directory
+  become: true
+  file:
+    path: "{{ cv_repo }}"
+    state: absent
+
 - name: "Clone cv repo"
   become: false
   git:

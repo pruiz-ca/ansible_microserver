@@ -1,0 +1,43 @@
+---
+### Home Assistant
+
+- name: Create Home Assistant Directory
+  file:
+    path: "{{ home_assistant_config_dir }}"
+    state: directory
+    mode: "0755"
+
+- name: Create a macvlan network
+  docker_network:
+    name: iot_network
+    driver: macvlan
+    driver_options:
+      parent: eno1
+    ipam_config:
+      - subnet: "{{ router_range }}/24"
+        gateway: "{{ router_ip }}"
+
+- name: Installing Home Assistant
+  docker_container:
+    name: home_assistant
+    hostname: home_assistant
+    image: homeassistant/home-assistant:stable
+    pull: true
+    state: "started"
+    networks:
+      - name: iot_network
+        ipv4_address: "{{ home_assistant_ip }}"
+    env:
+      "USER_UID": "1000"
+      "USER_GID": "1000"
+      "TZ": "{{ timezone }}"
+    volumes:
+      - "{{ home_assistant_config_dir }}:/config"
+    ports:
+      - "{{ home_assistant_port }}:8123"
+    restart_policy: unless-stopped
+    memory: "{{ home_assistant_memory }}"
+    labels: flame.type=app
+      flame.name="Home Assistant"
+      flame.url="http://{{ home_assistant_ip }}:{{ home_assistant_port }}"
+      flame.icon=home-assistant

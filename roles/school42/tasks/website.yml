@@ -1,6 +1,12 @@
 ---
 ### Clone repo
 
+- name: Remove cv directory
+  become: true
+  file:
+    path: "~/Documents/{{ website_name }}"
+    state: absent
+
 - name: "Clone website repo"
   become: false
   git:

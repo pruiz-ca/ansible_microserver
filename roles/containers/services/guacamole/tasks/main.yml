@@ -47,6 +47,7 @@
     volumes:
       - "{{ guacamole_db_dir }}:/var/lib/postgresql/data:rw"
       - "{{ guacamole_init_dir }}:/docker-entrypoint-initdb.d:ro"
+    labels: com.centurylinklabs.watchtower.enable=false
 
 - name: Wait until db container is running
   pause:

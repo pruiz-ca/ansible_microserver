@@ -1,0 +1,6 @@
+---
+### Home Assistant
+
+home_assistant_config_dir: "{{ docker_config_dir }}/home_assistant"
+
+home_assistant_memory: 512MB
