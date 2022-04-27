@@ -1,0 +1,6 @@
+---
+# Jellyfin
+
+jellyfin_config_dir: "{{ docker_config_dir }}/jellyfin"
+
+jellyfin_memory: 4g

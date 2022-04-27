@@ -114,6 +114,62 @@
         - containers
         - home_assistant
 
+    - role: containers/media/jellyfin
+      become: false
+      tags:
+        - containers
+        - media
+        - jellyfin
+
+    - role: containers/media/plex
+      become: false
+      tags:
+        - containers
+        - media
+        - plex
+
+    - role: containers/media/prowlarr
+      become: false
+      tags:
+        - containers
+        - media
+        - prowlarr
+
+    - role: containers/media/radarr
+      become: false
+      tags:
+        - containers
+        - media
+        - radarr
+
+    - role: containers/media/sonarr
+      become: false
+      tags:
+        - containers
+        - media
+        - sonarr
+
+    - role: containers/media/deluge
+      become: false
+      tags:
+        - containers
+        - media
+        - deluge
+
+    - role: containers/media/flaresolverr
+      become: false
+      tags:
+        - containers
+        - media
+        - flaresolverr
+
+    - role: containers/media/jellyseerr
+      become: false
+      tags:
+        - containers
+        - media
+        - jellyseerr
+
     ###
     # Security
     ###

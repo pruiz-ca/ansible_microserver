@@ -1,0 +1,6 @@
+---
+# Plex
+
+plex_config_dir: "{{ docker_config_dir }}/plex"
+
+plex_memory: 4g

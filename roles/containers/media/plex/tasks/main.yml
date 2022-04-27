@@ -1,0 +1,27 @@
+---
+- name: Installing Plex
+  docker_container:
+    name: plex
+    image: "lscr.io/linuxserver/plex"
+    pull: yes
+    networks:
+      - name: main_network
+    state: "started"
+    env:
+      "PUID": "1000"
+      "PGID": "1000"
+      "TZ": "{{ timezone }}"
+      "PLEX_CLAIM": "{{ plex_token }}"
+    volumes:
+      - "{{ plex_config_dir }}:/config"
+      - "{{ hdd2 }}/Media/TV:/data/TV"
+      - "{{ hdd2 }}/Media/Movies:/data/Movies"
+    restart_policy: unless-stopped
+    ports:
+      - "{{ plex_port }}:32400"
+    memory: "{{ plex_memory }}"
+    labels:
+      "flame.type": "application"
+      "flame.name": Plex
+      "flame.url": "{{ server_ip }}:{{ plex_port }}"
+      "flame.icon": "plex"

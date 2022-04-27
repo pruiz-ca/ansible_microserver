@@ -1,0 +1,28 @@
+---
+- name: Installing Deluge
+  docker_container:
+    name: deluge
+    image: "linuxserver/deluge"
+    pull: yes
+    networks:
+      - name: main_network
+    state: "started"
+    env:
+      "PUID": "1000"
+      "PGID": "1000"
+      "TZ": "{{ timezone }}"
+    volumes:
+      - "/etc/localtime:/etc/localtime"
+      - "{{ deluge_config_dir }}:/config"
+      - "{{ hdd2 }}/Downloads:/downloads"
+    restart_policy: unless-stopped
+    ports:
+      - "{{ deluge_port_a }}:8112"
+      - "{{ deluge_port_b }}:6881"
+      - "{{ deluge_port_b }}:6881/udp"
+    memory: "{{ deluge_memory }}"
+    labels:
+      "flame.type": "application"
+      "flame.name": Deluge
+      "flame.url": "{{ server_ip }}:{{ deluge_port_a }}"
+      "flame.icon": "water"

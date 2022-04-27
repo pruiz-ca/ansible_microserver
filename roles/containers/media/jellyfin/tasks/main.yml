@@ -1,0 +1,29 @@
+---
+- name: Installing Jellyfin
+  docker_container:
+    name: jellyfin
+    image: "jellyfin/jellyfin"
+    pull: yes
+    networks:
+      - name: main_network
+    state: "started"
+    env:
+      "PUID": "1000"
+      "PGID": "1000"
+      "TZ": "{{ timezone }}"
+    volumes:
+      - "/etc/localtime:/etc/localtime"
+      - "{{ jellyfin_config_dir }}:/config"
+      - "{{ hdd2 }}/Media/TV:/data/TV"
+      - "{{ hdd2 }}/Media/Movies:/data/Movies"
+      - "{{ hdd2 }}/Media/Cache:/data/Cache"
+      - "{{ hdd2 }}/Media/Metadata:/metadata"
+    restart_policy: unless-stopped
+    ports:
+      - "{{ jellyfin_port }}:8096"
+    memory: "{{ jellyfin_memory }}"
+    labels:
+      "flame.type": "application"
+      "flame.name": Jellyfin
+      "flame.url": "{{ server_ip }}:{{ jellyfin_port }}"
+      "flame.icon": "billiards-rack"

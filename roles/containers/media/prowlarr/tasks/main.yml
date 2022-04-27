@@ -1,0 +1,25 @@
+---
+- name: Installing Prowlarr
+  docker_container:
+    name: prowlarr
+    image: "linuxserver/prowlarr:nightly"
+    pull: yes
+    networks:
+      - name: main_network
+    state: "started"
+    env:
+      "PUID": "1000"
+      "PGID": "1000"
+      "TZ": "{{ timezone }}"
+    volumes:
+      - "/etc/localtime:/etc/localtime"
+      - "{{ prowlarr_config_dir }}:/config"
+    restart_policy: unless-stopped
+    ports:
+      - "{{ prowlarr_port }}:9696"
+    memory: "{{ prowlarr_memory }}"
+    labels:
+      "flame.type": "application"
+      "flame.name": Prowlarr
+      "flame.url": "{{ server_ip }}:{{ prowlarr_port }}"
+      "flame.icon": "hanger"

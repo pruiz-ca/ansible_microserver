@@ -1,0 +1,6 @@
+---
+# Sonarr
+
+sonarr_config_dir: "{{ docker_config_dir }}/sonarr"
+
+sonarr_memory: 512MB

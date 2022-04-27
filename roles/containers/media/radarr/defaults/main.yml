@@ -1,0 +1,6 @@
+---
+# Radarr
+
+radarr_config_dir: "{{ docker_config_dir }}/radarr"
+
+radarr_memory: 512MB

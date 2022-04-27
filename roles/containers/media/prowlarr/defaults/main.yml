@@ -1,0 +1,6 @@
+---
+# Prowlarr
+
+prowlarr_config_dir: "{{ docker_config_dir }}/prowlarr"
+
+prowlarr_memory: 512MB

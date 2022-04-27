@@ -1,0 +1,17 @@
+---
+- name: Installing Flaresolverr
+  docker_container:
+    name: flaresolverr
+    image: "flaresolverr/flaresolverr"
+    pull: yes
+    networks:
+      - name: main_network
+    state: "started"
+    env:
+      "PUID": "1000"
+      "PGID": "1000"
+      "TZ": "{{ timezone }}"
+    restart_policy: unless-stopped
+    ports:
+      - "{{ flaresolverr_port }}:8191"
+    memory: "{{ flaresolverr_memory }}"

@@ -1,0 +1,6 @@
+---
+# Deluge
+
+deluge_config_dir: "{{ docker_config_dir }}/deluge"
+
+deluge_memory: 512MB

@@ -1,0 +1,27 @@
+---
+- name: Installing Jellyseerr
+  docker_container:
+    name: jellyseerr
+    image: "fallenbagel/jellyseerr:latest"
+    pull: yes
+    networks:
+      - name: main_network
+    dns_servers:
+      - 1.1.1.1
+      - 1.0.0.1
+    state: "started"
+    env:
+      "PUID": "1000"
+      "PGID": "1000"
+      "TZ": "{{ timezone }}"
+    volumes:
+      - "{{ jellyseerr_config_dir }}:/app/config"
+    restart_policy: unless-stopped
+    ports:
+      - "{{ jellyseerr_port }}:5055"
+    memory: "{{ jellyseerr_memory }}"
+    labels:
+      "flame.type": "application"
+      "flame.name": Jellyseerr
+      "flame.url": "{{ server_ip }}:{{ jellyseerr_port }}"
+      "flame.icon": "eye"

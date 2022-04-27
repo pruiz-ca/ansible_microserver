@@ -1,0 +1,27 @@
+---
+- name: Installing Radarr
+  docker_container:
+    name: radarr
+    image: "ghcr.io/linuxserver/radarr"
+    pull: yes
+    networks:
+      - name: main_network
+    state: "started"
+    env:
+      "PUID": "1000"
+      "PGID": "1000"
+      "TZ": "{{ timezone }}"
+    volumes:
+      - "/etc/localtime:/etc/localtime"
+      - "{{ radarr_config_dir }}:/config"
+      - "{{ hdd2 }}/Media/Movies:/movies"
+      - "{{ hdd2 }}/Downloads:/downloads"
+    restart_policy: unless-stopped
+    ports:
+      - "{{ radarr_port }}:7878"
+    memory: "{{ radarr_memory }}"
+    labels:
+      "flame.type": "application"
+      "flame.name": Radarr
+      "flame.url": "{{ server_ip }}:{{ radarr_port }}"
+      "flame.icon": "movie-roll"

@@ -1,0 +1,6 @@
+---
+# Jellyseerr
+
+jellyseerr_config_dir: "{{ docker_config_dir }}/jellyseerr"
+
+jellyseerr_memory: 512MB
