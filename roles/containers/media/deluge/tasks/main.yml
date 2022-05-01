@@ -2,6 +2,7 @@
 - name: Installing Deluge
   docker_container:
     name: deluge
+    hostname: deluge
     image: "linuxserver/deluge"
     pull: yes
     networks:

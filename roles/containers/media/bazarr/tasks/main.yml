@@ -1,9 +1,9 @@
 ---
-- name: Installing Radarr
+- name: Installing Bazarr
   docker_container:
-    name: radarr
-    hostname: radarr
-    image: "ghcr.io/linuxserver/radarr"
+    name: bazarr
+    hostname: bazarr
+    image: "ghcr.io/linuxserver/bazarr"
     pull: yes
     networks:
       - name: main_network
@@ -13,16 +13,15 @@
       "PGID": "1000"
       "TZ": "{{ timezone }}"
     volumes:
-      - "/etc/localtime:/etc/localtime"
-      - "{{ radarr_config_dir }}:/config"
+      - "{{ bazarr_config_dir }}:/config"
       - "{{ hdd2 }}/Media/Movies:/movies"
-      - "{{ hdd2 }}/Downloads:/downloads"
+      - "{{ hdd2 }}/Media/TV:/tv"
     restart_policy: unless-stopped
     ports:
-      - "{{ radarr_port }}:7878"
-    memory: "{{ radarr_memory }}"
+      - "{{ bazarr_port }}:6767"
+    memory: "{{ bazarr_memory }}"
     labels:
       "flame.type": "application"
       "flame.name": Radarr
-      "flame.url": "{{ server_ip }}:{{ radarr_port }}"
+      "flame.url": "{{ server_ip }}:{{ bazarr_port }}"
       "flame.icon": "movie-roll"

@@ -170,6 +170,13 @@
         - media
         - jellyseerr
 
+    - role: containers/media/bazarr
+      become: false
+      tags:
+        - containers
+        - media
+        - bazarr
+
     ###
     # Security
     ###

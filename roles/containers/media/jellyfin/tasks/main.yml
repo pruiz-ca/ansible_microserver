@@ -2,10 +2,10 @@
 - name: Installing Jellyfin
   docker_container:
     name: jellyfin
+    hostname: jellyfin
     image: "jellyfin/jellyfin"
     pull: yes
-    networks:
-      - name: main_network
+    network_mode: host
     state: "started"
     env:
       "PUID": "1000"
@@ -25,5 +25,5 @@
     labels:
       "flame.type": "application"
       "flame.name": Jellyfin
-      "flame.url": "{{ server_ip }}:{{ jellyfin_port }}"
+      "flame.url": "{{ server_ip }}:8096"
       "flame.icon": "billiards-rack"

@@ -2,6 +2,7 @@
 - name: Installing Jellyseerr
   docker_container:
     name: jellyseerr
+    hostname: jellyseerr
     image: "fallenbagel/jellyseerr:latest"
     pull: yes
     networks:

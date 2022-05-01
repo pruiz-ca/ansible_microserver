@@ -2,6 +2,7 @@
 - name: Installing Prowlarr
   docker_container:
     name: prowlarr
+    hostname: prowlarr
     image: "linuxserver/prowlarr:nightly"
     pull: yes
     networks:

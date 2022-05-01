@@ -2,6 +2,7 @@
 - name: Installing Plex
   docker_container:
     name: plex
+    hostname: plex
     image: "lscr.io/linuxserver/plex"
     pull: yes
     networks:
@@ -11,7 +12,7 @@
       "PUID": "1000"
       "PGID": "1000"
       "TZ": "{{ timezone }}"
-      "PLEX_CLAIM": "{{ plex_token }}"
+      # "PLEX_CLAIM": "{{ plex_token }}"
     volumes:
       - "{{ plex_config_dir }}:/config"
       - "{{ hdd2 }}/Media/TV:/data/TV"

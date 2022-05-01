@@ -2,6 +2,7 @@
 - name: Installing Flaresolverr
   docker_container:
     name: flaresolverr
+    hostname: flaresolverr
     image: "flaresolverr/flaresolverr"
     pull: yes
     networks:

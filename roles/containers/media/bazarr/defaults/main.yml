@@ -1,0 +1,6 @@
+---
+# Bazarr
+
+bazarr_config_dir: "{{ docker_config_dir }}/bazarr"
+
+bazarr_memory: 512MB
