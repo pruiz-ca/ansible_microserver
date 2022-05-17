@@ -22,6 +22,6 @@
     memory: "{{ bazarr_memory }}"
     labels:
       "flame.type": "application"
-      "flame.name": Radarr
+      "flame.name": Bazarr
       "flame.url": "{{ server_ip }}:{{ bazarr_port }}"
-      "flame.icon": "movie-roll"
+      "flame.icon": "subtitles"

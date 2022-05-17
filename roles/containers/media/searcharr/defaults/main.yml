@@ -1,0 +1,6 @@
+---
+# Searcharr
+
+searcharr_config_dir: "{{ docker_config_dir }}/searcharr"
+
+searcharr_memory: 512MB

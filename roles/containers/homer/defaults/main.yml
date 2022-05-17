@@ -1,8 +1,0 @@
----
-### Homer
-
-colorscheme: gruvbox
-
-homer_config_dir: "{{ docker_config_dir }}/homer"
-
-homer_memory: 1g

@@ -1,0 +1,36 @@
+---
+
+- name: Clone Searcharr repo
+  become: true
+  git:
+    repo: "https://github.com/toddrob99/searcharr.git"
+    dest: "{{ searcharr_config_dir }}/data"
+    clone: yes
+
+- name: Copy config files
+  become: true
+  template:
+    src: ./files/settings.py.j2
+    dest: "{{ searcharr_config_dir }}/settings.py"
+    mode: 0644
+
+- name: Installing Searcharr
+  docker_container:
+    name: searcharr
+    hostname: searcharr
+    image: "toddrob/searcharr:latest"
+    pull: yes
+    networks:
+      - name: main_network
+    state: "started"
+    env:
+      "PUID": "1000"
+      "PGID": "1000"
+      "TZ": "{{ timezone }}"
+    volumes:
+      - "{{ searcharr_config_dir }}/data:/app/data"
+      - "{{ searcharr_config_dir }}/logs:/app/logs"
+      - "{{ searcharr_config_dir }}/settings.py:/app/settings.py"
+    restart_policy: unless-stopped
+    memory: "{{ searcharr_memory }}"
+

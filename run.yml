@@ -24,11 +24,6 @@
     ###
     # Containers
     ###
-    # - role: containers/homer
-    #   become: false
-    #   tags:
-    #     - containers
-    #     - homer
 
     - role: containers/system/portainer
       become: false
@@ -176,6 +171,13 @@
         - containers
         - media
         - bazarr
+
+    - role: containers/media/searcharr
+      become: false
+      tags:
+        - containers
+        - media
+        - searcharr
 
     ###
     # Security
