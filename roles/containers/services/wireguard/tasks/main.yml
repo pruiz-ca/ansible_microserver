@@ -1,0 +1,36 @@
+---
+### Wireguard
+
+- name: Create Wireguard Directory
+  file:
+    path: "{{ wireguard_config_dir }}"
+    state: directory
+    mode: "0755"
+
+- name: Make sure the Wireguard container is created and running
+  community.general.docker_container:
+    name: "wg-easy"
+    image: "weejewel/wg-easy:7"
+    pull: yes
+    networks:
+      - name: main_network
+    sysctls:
+      "net.ipv4.conf.all.src_valid_mark": "1"
+      "net.ipv4.ip_forward": "1"
+    capabilities:
+      - net_admin
+      - sys_module
+    state: "started"
+    env:
+      "WG_HOST": "{{ wireguard_host }}"
+      "WG_PERSISTENT_KEEPALIVE": "25"
+    ports:
+      - "{{ wireguard_port_a }}:51820/udp"
+      - "{{ wireguard_port_b }}:51821/tcp"
+    volumes:
+      - "{{ wireguard_config_dir }}:/etc/wireguard"
+    restart_policy: unless-stopped
+    labels: flame.type=app
+      flame.name=Wireguard
+      flame.url="http://{{ server_ip }}:{{ wireguard_port_b }}"
+      flame.icon=snake

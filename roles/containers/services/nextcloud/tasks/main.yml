@@ -57,7 +57,7 @@
   docker_container:
     name: nextcloud
     hostname: nextcloud
-    image: linuxserver/nextcloud:php8
+    image: linuxserver/nextcloud:latest
     pull: true
     state: "started"
     networks:

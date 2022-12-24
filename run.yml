@@ -109,6 +109,12 @@
         - containers
         - home_assistant
 
+    - role: containers/services/wireguard
+      become: false
+      tags:
+        - containers
+        - wireguard
+
     - role: containers/media/jellyfin
       become: false
       tags:

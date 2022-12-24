@@ -1,0 +1,6 @@
+---
+### Wireguard
+
+wireguard_config_dir: "{{ docker_config_dir }}/wireguard"
+
+wireguard_memory: 1g

@@ -34,7 +34,7 @@
   docker_container:
     name: "guacamole-postgres"
     hostname: "guacamole-postgres"
-    image: postgres:latest
+    image: postgres:14.6
     pull: yes
     state: "started"
     networks:
